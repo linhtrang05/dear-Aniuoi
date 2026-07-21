@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="vi">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Thiệp Chúc Mừng Sinh Nhật</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root { --vh: 1vh; }
+    body { 
+      font-family: 'Playfair Display', serif; 
+      margin: 0; 
+      padding: 0; 
+      min-height: 100vh;
+    }
+    .dancing { font-family: 'Dancing Script', cursive; }
+
+    .envelope-wrapper { 
+      perspective: 1000px; 
+      cursor: pointer; 
+      -webkit-tap-highlight-color: transparent; /* Loại bỏ viền xanh khi chạm trên iOS/Android */
+    }
+    .envelope-flap {
+      transform-origin: top center;
+      transition: transform 0.8s ease;
+    }
+    
+    /* Trạng thái khi mở thiệp */
+    .is-opened .envelope-flap { transform: rotateX(180deg); }
+    
+    .card-content {
+      opacity: 0; 
+      transform: translateY(50px);
+      pointer-events: none;
+      transition: opacity 0.8s ease 0.6s, transform 0.8s ease 0.6s;
+    }
+    
+    .is-opened .card-content { 
+      opacity: 1; 
+      transform: translateY(0); 
+      pointer-events: auto;
+    }
+    
+    .prompt-text { animation: pulse-soft 2s ease-in-out infinite; }
+    .is-opened .prompt-text { display: none; }
+
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    
+    @keyframes float-up {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    }
+    
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,182,193,0.4); }
+      50% { text-shadow: 0 0 25px rgba(255,105,180,0.7), 0 0 50px rgba(255,182,193,0.3); }
+    }
+    
+    .glow-text { animation: glow 3s ease-in-out infinite; }
+    
+    .heart-particle {
+      position: fixed; 
+      bottom: -20px;
+      animation: float-up linear forwards;
+      pointer-events: none; 
+      font-size: 1.2rem;
+      z-index: 50;
+    }
+  </style>
+ </head>
+
+ <body class="w-full flex items-center justify-center overflow-x-hidden relative bg-rose-50">
+  
+  <!-- Hình nền -->
+  <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1000&auto=format&fit=crop" 
+       alt="Background" 
+       class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" 
+       loading="lazy">
+       
+  <div class="absolute inset-0 bg-gradient-to-b from-pink-50/80 via-rose-50/60 to-pink-100/80 pointer-events-none"></div>
+
+  <main id="main" class="relative z-10 w-full max-w-sm mx-auto px-5 py-10 flex flex-col items-center">
+   
+   <!-- Phong bì -->
+   <div id="envelope" class="envelope-wrapper w-full flex flex-col items-center" role="button" aria-label="Chạm để mở thiệp">
+    <div class="relative w-56 h-40 mb-4">
+     <div class="absolute inset-0 bg-rose-200 rounded-lg shadow-xl border border-rose-300"></div>
+     <div class="envelope-flap absolute top-0 left-0 right-0 h-20 bg-rose-300 rounded-t-lg z-10" style="clip-path: polygon(0 0, 100% 0, 50% 100%)"></div>
+     <div class="absolute inset-0 flex items-center justify-center pt-4">
+      <span class="text-4xl">💌</span>
+     </div>
+    </div>
+    <p class="prompt-text text-center text-rose-600 font-semibold text-lg">Chạm vào đây để mở thiệp ✨</p>
+   </div>
+
+   <!-- Nội dung Thiệp (Hiển thị sau khi nhấn) -->
+   <div class="card-content w-full flex flex-col items-center text-center space-y-5 mt-2">
+    <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=500&auto=format&fit=crop" 
+         alt="Hoa mừng sinh nhật" 
+         class="w-40 h-40 rounded-full object-cover shadow-lg border-4 border-white/80">
+    
+    <h1 class="dancing glow-text text-4xl text-rose-600 font-bold">Happy Birthday, Sweety!</h1>
+    
+    <p class="leading-relaxed italic px-2 text-gray-700 text-base">
+      Chúc chị tuổi mới thật nhiều điều bất ngờ dễ thương, những ngày bình yên và những niềm vui nhỏ bé. Hy vọng em sẽ là một phần trong những niềm vui đó. 🌸✨
+    </p>
+
+    <div class="mt-4 px-6 py-2 rounded-full bg-white/70 backdrop-blur-sm border border-rose-200 shadow-sm">
+     <p class="dancing text-xl text-rose-500">From LinChannnn gửi Aniuoi ❤️</p>
+    </div>
+   </div>
+
+  </main>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const mainEl = document.getElementById('main');
+    let opened = false;
+
+    // Lắng nghe cả sự kiện Click và Touch trên thiết bị di động
+    function openCard(e) {
+      if (opened) return;
+      opened = true;
+      mainEl.classList.add('is-opened');
+      setTimeout(spawnHearts, 800);
+    }
+
+    envelope.addEventListener('click', openCard);
+
+    function spawnHearts() {
+      const items = ['💕', '🌸', '✨', '💗', '🩷'];
+      setInterval(() => {
+        const el = document.createElement('span');
+        el.className = 'heart-particle';
+        el.textContent = items[Math.floor(Math.random() * items.length)];
+        el.style.left = Math.random() * 90 + 5 + 'vw';
+        el.style.animationDuration = (3 + Math.random() * 3) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 6000);
+      }, 400);
+    }
+  </script>
+ </body>
+</html>
